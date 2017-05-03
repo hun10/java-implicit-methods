@@ -10,6 +10,9 @@
  ******************************************************************************/
 package com.sun.tools.javac.comp;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import com.sun.source.tree.Tree;
 import com.sun.tools.javac.code.Kinds;
 import com.sun.tools.javac.code.Symbol;
@@ -19,12 +22,12 @@ import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.List;
 import javaoo.OOMethods;
 
-import java.util.Map;
-import java.util.WeakHashMap;
-
 import static com.sun.tools.javac.code.Kinds.VAL;
 import static com.sun.tools.javac.code.Kinds.VAR;
-import static com.sun.tools.javac.code.TypeTag.*;
+import static com.sun.tools.javac.code.TypeTag.ERROR;
+import static com.sun.tools.javac.code.TypeTag.FORALL;
+import static com.sun.tools.javac.code.TypeTag.METHOD;
+import static com.sun.tools.javac.code.TypeTag.NONE;
 
 
 public class OOAttr extends Attr {
@@ -60,6 +63,29 @@ public class OOAttr extends Attr {
         } finally {
             if (rs.currentResolutionContext == newrc)
                 rs.currentResolutionContext = null;
+        }
+    }
+
+    @Override
+    public void visitApply(JCTree.JCMethodInvocation jcMethodInvocation) {
+        super.visitApply(jcMethodInvocation);
+        if (jcMethodInvocation.meth instanceof JCTree.JCIdent) {
+            JCTree.JCIdent ident = (JCTree.JCIdent) jcMethodInvocation.meth;
+            if (names.fromString("auto").equals(ident.name) && jcMethodInvocation.args.size() == 1) {
+                Type.MethodType methodType = (Type.MethodType) ident.type;
+                Type.ClassType cls = (Type.ClassType) methodType.argtypes.get(0);
+                Type required = cls.typarams_field.get(0);
+
+                JCTree.JCMemberReference mref = (JCTree.JCMemberReference) jcMethodInvocation.args.get(0);
+
+                for (Symbol s : env.info.scope.getElements()) {
+                    if (types.isAssignable(s.type, required)) {
+                        JCTree.JCMethodInvocation mi = make.Apply(null, make.Select(mref.expr, mref.sym), List.of(make.Ident(s)));
+                        attribExpr(mi, env);
+                        translateMap.put(jcMethodInvocation, mi);
+                    }
+                }
+            }
         }
     }
 
