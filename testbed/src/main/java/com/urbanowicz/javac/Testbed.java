@@ -1,12 +1,15 @@
 package com.urbanowicz.javac;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigInteger;
 
 public class Testbed {
     public static void main(String... args) {
-        Map<String, String> map = new HashMap<>();
-        map["2+2"] = "5";
-        System.out.println(map["2+2"]);
+        BigInteger x = 55;
+        String arg1 = "success";
+        testMethod(arg1);
+    }
+
+    private static void testMethod(String arg) {
+        System.out.println(arg);
     }
 }

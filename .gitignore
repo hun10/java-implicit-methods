@@ -2,3 +2,4 @@ java-implicit-methods-plugin/target/
 testbed/target/
 *.iml
 .idea/
+*.class
