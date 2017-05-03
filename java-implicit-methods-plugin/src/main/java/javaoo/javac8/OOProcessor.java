@@ -34,13 +34,8 @@ public class OOProcessor {
 
             // hack: load classes to the same classloader so they will be able to use and override default accessor members
             Class<?> attrClass = reloadClass("com.sun.tools.javac.comp.OOAttr", pcl, destcl);
-            Class<?> resolveClass = reloadClass("com.sun.tools.javac.comp.OOResolve", pcl, destcl);
             Class<?> transTypesClass = reloadClass("com.sun.tools.javac.comp.OOTransTypes", pcl, destcl);
-            reloadClass("javaoo.OOMethods", pcl, destcl);
-            reloadClass("javaoo.OOMethods$1", pcl, destcl);
-            reloadClass("javaoo.OOMethods$2", pcl, destcl);
 
-            getInstance(resolveClass, context);
             attr = (Attr) getInstance(attrClass, context);
             Object transTypes = getInstance(transTypesClass, context);
 
