@@ -37,22 +37,31 @@ public class OOAttr extends Attr {
     @Override
     public void visitApply(JCTree.JCMethodInvocation jcMethodInvocation) {
         super.visitApply(jcMethodInvocation);
+
         if (jcMethodInvocation.meth instanceof JCTree.JCIdent) {
             JCTree.JCIdent ident = (JCTree.JCIdent) jcMethodInvocation.meth;
-            if (names.fromString("auto").equals(ident.name) && jcMethodInvocation.args.size() == 1) {
-                Type.MethodType methodType = (Type.MethodType) ident.type;
-                Type.ClassType cls = (Type.ClassType) methodType.argtypes.get(0);
-                Type required = cls.typarams_field.get(0);
 
-                JCTree.JCMemberReference mref = (JCTree.JCMemberReference) jcMethodInvocation.args.get(0);
+            if (names.fromString("auto").equals(ident.name)
+                    && names.fromString("com.urbanowicz.javac.ImplicitMethodsPlugin").equals(ident.sym.owner.getQualifiedName())) {
 
-                for (Symbol s : env.info.scope.getElements()) {
-                    if (types.isAssignable(s.type, required)) {
-                        JCTree.JCMethodInvocation mi = make.Apply(null, make.Select(mref.expr, mref.sym), List.of(make.Ident(s)));
-                        attribExpr(mi, env);
-                        translateMap.put(jcMethodInvocation, mi);
+                JCTree.JCMemberReference ref = (JCTree.JCMemberReference) jcMethodInvocation.args.get(0);
+                Type.MethodType methodType = (Type.MethodType) ref.sym.type;
+
+                List<JCTree.JCExpression> args = List.nil();
+                for (Type required : methodType.argtypes) {
+                    for (Symbol s : env.info.scope.getElements()) {
+                        if (types.isAssignable(s.type, required)) {
+                            args = args.append(make.Ident(s));
+                        }
                     }
                 }
+
+                JCTree.JCMethodInvocation mi = make.Apply(
+                        null,
+                        make.Select(ref.expr, ref.sym), args
+                );
+                attribExpr(mi, env);
+                translateMap.put(jcMethodInvocation, mi);
             }
         }
     }

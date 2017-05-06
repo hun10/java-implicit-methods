@@ -5,10 +5,16 @@ import static com.urbanowicz.javac.ImplicitMethodsPlugin.auto;
 public class Testbed {
     public static void main(String... args) {
         String arg1 = "success";
-        auto(Testbed::testMethod);
+        Void auto = auto(Testbed::testMethod2);
     }
 
-    private static void testMethod(String arg) {
+    private static Void testMethod(String arg) {
         System.out.println(arg);
+        return null;
+    }
+
+    private static Void testMethod2(String arg, String[] var) {
+        System.out.println(arg);
+        return null;
     }
 }

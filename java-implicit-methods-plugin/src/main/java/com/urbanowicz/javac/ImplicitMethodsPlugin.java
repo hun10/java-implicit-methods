@@ -1,6 +1,8 @@
 package com.urbanowicz.javac;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.Plugin;
@@ -34,6 +36,14 @@ public class ImplicitMethodsPlugin implements Plugin {
     }
 
     public static <T> void auto(Consumer<T> consumer) {
+        throw new UnsupportedOperationException();
+    }
+
+    public static <T, R> R auto(Function<T, R> function) {
+        throw new UnsupportedOperationException();
+    }
+
+    public static <T, U, R> R auto(BiFunction<T, U, R> function) {
         throw new UnsupportedOperationException();
     }
 }
