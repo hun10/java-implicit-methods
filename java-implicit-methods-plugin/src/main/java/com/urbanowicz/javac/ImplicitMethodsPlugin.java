@@ -1,5 +1,7 @@
 package com.urbanowicz.javac;
 
+import java.util.function.Consumer;
+
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.Plugin;
 import com.sun.source.util.TaskEvent;
@@ -29,5 +31,9 @@ public class ImplicitMethodsPlugin implements Plugin {
             public void finished(TaskEvent taskEvent) {
             }
         });
+    }
+
+    public static <T> void auto(Consumer<T> consumer) {
+        throw new UnsupportedOperationException();
     }
 }

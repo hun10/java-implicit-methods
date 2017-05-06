@@ -13,7 +13,7 @@
 
     <modules>
         <module>java-implicit-methods-plugin</module>
-        <!--<module>testbed</module>-->
+        <module>testbed</module>
     </modules>
 
     <properties>

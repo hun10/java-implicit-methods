@@ -1,7 +1,6 @@
 package com.urbanowicz.javac;
 
-import java.util.function.Function;
-import java.util.function.Consumer;
+import static com.urbanowicz.javac.ImplicitMethodsPlugin.auto;
 
 public class Testbed {
     public static void main(String... args) {
@@ -11,9 +10,5 @@ public class Testbed {
 
     private static void testMethod(String arg) {
         System.out.println(arg);
-    }
-
-    private static <T> void auto(Consumer<T> consumer) {
-        throw new UnsupportedOperationException();
     }
 }
