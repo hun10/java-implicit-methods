@@ -45,11 +45,29 @@ public class ImplicitMethodsPlugin implements Plugin {
         throw new UnsupportedOperationException();
     }
 
+    public static <T, U, V> void auto(TriConsumer<T, U, V> consumer) {
+        throw new UnsupportedOperationException();
+    }
+
     public static <T, R> R auto(Function<T, R> function) {
         throw new UnsupportedOperationException();
     }
 
     public static <T, U, R> R auto(BiFunction<T, U, R> function) {
         throw new UnsupportedOperationException();
+    }
+
+    public static <T, U, V, R> R auto(TriFunction<T, U, V, R> function) {
+        throw new UnsupportedOperationException();
+    }
+
+    @FunctionalInterface
+    public interface TriConsumer<T, U, V> {
+        void accept(T t, U u, V v);
+    }
+
+    @FunctionalInterface
+    public interface TriFunction<T, U, V, R> {
+        R apply(T t, U u, V v);
     }
 }

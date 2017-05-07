@@ -86,22 +86,14 @@ class ExplicitExpander extends TreeTranslator {
     }
 
     private void inFrame(Runnable v) {
-        pushFrame();
+        frames = frames.prepend(List.nil());
         v.run();
-        dropFrame();
+        frames = frames.tail;
     }
 
     private void addToCurrentFrame(Symbol sym) {
         List<Symbol> head = frames.head;
         List<Symbol> newHead = head.append(sym);
         frames = frames.tail.prepend(newHead);
-    }
-
-    private void pushFrame() {
-        frames = frames.prepend(List.nil());
-    }
-
-    private void dropFrame() {
-        frames = frames.tail;
     }
 }
