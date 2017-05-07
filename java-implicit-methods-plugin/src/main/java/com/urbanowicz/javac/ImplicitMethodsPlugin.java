@@ -1,5 +1,6 @@
 package com.urbanowicz.javac;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -9,8 +10,7 @@ import com.sun.source.util.Plugin;
 import com.sun.source.util.TaskEvent;
 import com.sun.source.util.TaskListener;
 import com.sun.tools.javac.api.BasicJavacTask;
-import com.sun.tools.javac.main.JavaCompiler;
-import javaoo.javac8.OOProcessor;
+import com.sun.tools.javac.tree.JCTree;
 
 public class ImplicitMethodsPlugin implements Plugin {
     @Override
@@ -20,22 +20,28 @@ public class ImplicitMethodsPlugin implements Plugin {
 
     @Override
     public void init(JavacTask task, String... args) {
+        ExplicitExpander explicitExpander = new ExplicitExpander(((BasicJavacTask) task).getContext());
+
         task.addTaskListener(new TaskListener() {
             @Override
             public void started(TaskEvent taskEvent) {
-                if (taskEvent.getKind() == TaskEvent.Kind.ANALYZE) {
-                    JavaCompiler compiler = JavaCompiler.instance(((BasicJavacTask) task).getContext());
-                    OOProcessor.patch(compiler);
-                }
             }
 
             @Override
             public void finished(TaskEvent taskEvent) {
+                if (taskEvent.getKind() == TaskEvent.Kind.ANALYZE) {
+                    JCTree.JCCompilationUnit unit = (JCTree.JCCompilationUnit) taskEvent.getCompilationUnit();
+                    unit.accept(explicitExpander);
+                }
             }
         });
     }
 
     public static <T> void auto(Consumer<T> consumer) {
+        throw new UnsupportedOperationException();
+    }
+
+    public static <T, U> void auto(BiConsumer<T, U> consumer) {
         throw new UnsupportedOperationException();
     }
 
